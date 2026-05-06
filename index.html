@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Bear Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#0a0d12;--surface:#111520;--surface-2:#171d2b;--border:#1e2638;--accent:#4a7c9e;--accent-light:#6ba3c4;--gold:#c8a96e;--text:#e8edf5;--text-muted:#7a8ba3;--text-dim:#4a5668;--green-light:#52b893;--amber-light:#d4a017;--white:#ffffff}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh}
+    #gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+    .gate-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:56px 48px 48px;width:100%;max-width:420px;text-align:center}
+    .gate-bear{font-size:42px;margin-bottom:20px;display:block}
+    .gate-title{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:.02em;color:var(--text);margin-bottom:6px}
+    .gate-sub{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:40px;font-family:'DM Mono',monospace}
+    .gate-label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);font-family:'DM Mono',monospace;text-align:left;margin-bottom:8px}
+    .gate-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:1px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.1em;padding:14px 16px;outline:none;transition:border-color .2s;margin-bottom:16px}
+    .gate-input:focus{border-color:var(--accent)}.gate-input.error{border-color:#8c3d3d;animation:shake .3s ease}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    .gate-btn{width:100%;background:var(--accent);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:15px;cursor:pointer;border-radius:1px;transition:background .2s}
+    .gate-btn:hover{background:var(--accent-light)}
+    .gate-error{font-size:11px;color:#c47474;font-family:'DM Mono',monospace;margin-bottom:12px;min-height:16px;text-align:left}
+    .gate-disclaimer{margin-top:28px;font-size:10px;color:var(--text-dim);line-height:1.6;font-family:'DM Mono',monospace}
+    #site{display:none}
+    #site.visible{display:block;animation:fadeIn .6s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .disclaimer-banner{background:var(--surface-2);border-bottom:1px solid var(--border);padding:9px 24px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase}
+    .disclaimer-banner span{color:var(--gold);font-weight:500}
+    header{border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100}
+    .header-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:14px;text-decoration:none}
+    .logo-bear{font-size:26px;line-height:1}
+    .logo-text{display:flex;flex-direction:column;gap:1px}
+    .logo-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);letter-spacing:.03em}
+    .logo-tag{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-dim)}
+    nav{display:flex;align-items:center;gap:32px}
+    nav a{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s}
+    nav a:hover{color:var(--text)}
+    .hero{border-bottom:1px solid var(--border);padding:80px 32px 72px;max-width:1200px;margin:0 auto}
+    .hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:20px}
+    .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,58px);line-height:1.12;color:var(--text);max-width:700px;margin-bottom:22px}
+    .hero-title em{font-style:italic;color:var(--accent-light)}
+    .hero-body{font-size:15px;color:var(--text-muted);max-width:560px;line-height:1.75;margin-bottom:32px}
+    .hero-meta{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+    .hero-stat{display:flex;flex-direction:column;gap:3px}
+    .hero-stat-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text)}
+    .hero-stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim)}
+    .hero-divider{width:1px;height:36px;background:var(--border)}
+    .filters-bar{max-width:1200px;margin:0 auto;padding:28px 32px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+    .filters-left{display:flex;gap:8px;flex-wrap:wrap}
+    .filter-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;border-radius:1px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .2s}
+    .filter-btn:hover{border-color:var(--accent);color:var(--accent-light)}
+    .filter-btn.active{background:var(--accent);border-color:var(--accent);color:var(--white)}
+    .sort-select{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:8px 14px;border-radius:1px;cursor:pointer;outline:none}
+    .catalog{max-width:1200px;margin:0 auto;padding:36px 32px 80px}
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+    .product-card{background:var(--surface);display:flex;flex-direction:column;transition:background .2s;position:relative;overflow:hidden}
+    .product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent) 0%,transparent 100%);opacity:0;transition:opacity .2s}
+    .product-card:hover{background:var(--surface-2)}
+    .product-card:hover::before{opacity:1}
+    .card-img{width:100%;height:240px;background:radial-gradient(ellipse at 50% 40%,#18202e 0%,#0a0d12 75%);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+    .card-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(10,13,18,.55),transparent);pointer-events:none}
+    .card-img svg{height:210px;width:auto;filter:drop-shadow(0 14px 30px rgba(0,0,0,.65)) drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+    .card-body{padding:22px 26px 0;display:flex;flex-direction:column;flex:1}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+    .card-badges{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+    .badge{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;border-radius:1px}
+    .badge-instock{background:rgba(61,140,111,.12);color:var(--green-light);border:1px solid rgba(61,140,111,.3)}
+    .badge-limited{background:rgba(184,134,11,.1);color:var(--amber-light);border:1px solid rgba(184,134,11,.25)}
+    .badge-incoming{background:rgba(74,124,158,.1);color:var(--accent-light);border:1px solid rgba(74,124,158,.25)}
+    .badge-blend{background:rgba(200,169,110,.08);color:var(--gold);border:1px solid rgba(200,169,110,.2)}
+    .card-id{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase}
+    .card-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);line-height:1.2;margin-bottom:4px}
+    .card-strength{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--accent-light);margin-bottom:14px}
+    .card-desc{font-size:12.5px;color:var(--text-muted);line-height:1.7;flex:1;margin-bottom:22px}
+    .card-pricing{border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin:0 -26px}
+    .price-option{background:var(--surface);padding:14px 18px;display:flex;flex-direction:column;gap:3px;transition:background .15s}
+    .product-card:hover .price-option{background:var(--surface-2)}
+    .price-label{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim)}
+    .price-value{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)}
+    .price-sub{font-family:'DM Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:.1em}
+    .about{border-top:1px solid var(--border);background:var(--surface)}
+    .about-inner{max-width:1200px;margin:0 auto;padding:72px 32px;display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:center}
+    .about-eyebrow{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-light);margin-bottom:18px}
+    .about-title{font-family:'DM Serif Display',serif;font-size:34px;line-height:1.2;margin-bottom:22px}
+    .about-body{font-size:14px;color:var(--text-muted);line-height:1.8}
+    .about-body p+p{margin-top:14px}
+    .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+    .about-stat{background:var(--bg);padding:28px 24px}
+    .about-stat-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--text);margin-bottom:6px}
+    .about-stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim)}
+    footer{border-top:1px solid var(--border);background:var(--surface)}
+    .footer-inner{max-width:1200px;margin:0 auto;padding:40px 32px;display:flex;align-items:flex-start;justify-content:space-between;gap:32px;flex-wrap:wrap}
+    .footer-left{max-width:480px}
+    .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .footer-logo-bear{font-size:22px}
+    .footer-logo-name{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text)}
+    .footer-disclaimer{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--text-dim);line-height:1.8}
+    .footer-disclaimer strong{color:var(--text-muted);font-weight:500}
+    .footer-right{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--text-dim);text-align:right}
+    .product-card[data-hidden="true"]{display:none}
+    @media(max-width:768px){.header-inner{padding:0 20px}nav{display:none}.hero{padding:48px 20px 40px}.filters-bar{padding:20px}.catalog{padding:24px 20px 60px}.product-grid{grid-template-columns:1fr}.about-inner{grid-template-columns:1fr;gap:40px;padding:48px 20px}.footer-inner{padding:32px 20px;flex-direction:column}.footer-right{text-align:left}.gate-card{padding:40px 28px 32px;margin:0 20px}}
+  </style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <span class="gate-bear">🐻</span>
+    <h1 class="gate-title">Big Bear Research</h1>
+    <p class="gate-sub">Restricted Access — Authorized Personnel Only</p>
+    <label class="gate-label" for="gate-pw">Access Code</label>
+    <input type="password" id="gate-pw" class="gate-input" placeholder="Enter access code" autocomplete="off" onkeydown="if(event.key==='Enter')unlock()"/>
+    <p class="gate-error" id="gate-error"></p>
+    <button class="gate-btn" onclick="unlock()">Enter Portal</button>
+    <p class="gate-disclaimer">This portal is intended for qualified research personnel only.<br/>All content is for informational purposes. No products are available for sale or shipment.</p>
+  </div>
+</div>
+
+<div id="site">
+  <div class="disclaimer-banner"><span>⚠ Research Use Only</span> — All compounds listed are strictly for scientific research purposes. No orders, shipments, or medical advice are provided through this platform.</div>
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <span class="logo-bear">🐻</span>
+        <div class="logo-text"><span class="logo-name">Big Bear Research</span><span class="logo-tag">Peptide Research Catalog</span></div>
+      </a>
+      <nav><a href="#catalog">Catalog</a><a href="#about">About</a></nav>
+    </div>
+  </header>
+  <div class="hero">
+    <p class="hero-eyebrow">Research Compound Catalog — 2026</p>
+    <h1 class="hero-title">Advanced Peptide<br/><em>Research Compounds</em></h1>
+    <p class="hero-body">A curated catalog of research-grade peptides and bioactive compounds for qualified researchers. All products listed are for scientific investigation only and are not intended for human use, diagnosis, or treatment.</p>
+    <div class="hero-meta">
+      <div class="hero-stat"><span class="hero-stat-num">15</span><span class="hero-stat-label">Compounds</span></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><span class="hero-stat-num">13</span><span class="hero-stat-label">In Stock</span></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><span class="hero-stat-num">2</span><span class="hero-stat-label">Arriving Soon</span></div>
+    </div>
+  </div>
+  <div class="filters-bar">
+    <div class="filters-left">
+      <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+      <button class="filter-btn" onclick="filterProducts('instock',this)">In Stock</button>
+      <button class="filter-btn" onclick="filterProducts('limited',this)">Limited</button>
+      <button class="filter-btn" onclick="filterProducts('blend',this)">Blends</button>
+      <button class="filter-btn" onclick="filterProducts('incoming',this)">Arriving Soon</button>
+    </div>
+    <select class="sort-select" onchange="sortProducts(this.value)">
+      <option value="default">Default Order</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="name">Name A → Z</option>
+    </select>
+  </div>
+  <div class="catalog" id="catalog">
+    <div class="product-grid" id="product-grid">
+      <div class="product-card" data-status="instock" data-price="50" data-name="Retatrutide" data-line1="GLP-RT" data-line2="10mg" data-vid="001"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-001</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Retatrutide</h2><p class="card-strength">GLP/GIP/Glucagon Triple Agonist · 10 mg</p><p class="card-desc">Retatrutide (GLP-RT) is a tri-receptor agonist targeting GLP-1, GIP, and glucagon receptors simultaneously. Research interest centers on its differential engagement of all three pathways compared to dual-agonist compounds, with ongoing clinical studies investigating metabolic and body composition endpoints. Supplied as lyophilized powder.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$50</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$40</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="60" data-name="Retatrutide 20mg" data-line1="GLP-RT" data-line2="20mg" data-vid="002"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-002</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Retatrutide</h2><p class="card-strength">GLP/GIP/Glucagon Triple Agonist · 20 mg</p><p class="card-desc">Higher-concentration presentation of retatrutide for research protocols requiring extended dosing or comparative dose-response studies. The triple-receptor mechanism provides a distinct pharmacological profile from semaglutide and tirzepatide analogs. Supplied as lyophilized powder with documented purity.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$60</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$50</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock blend" data-price="55" data-name="GLOW 50mg Blend" data-line1="GLOW" data-line2="50mg" data-vid="003"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-003</span><div class="card-badges"><span class="badge badge-blend">Signature Blend</span><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">GLOW 50</h2><p class="card-strength">GHK-Cu 35mg · TB-500 10mg · BPC-157 5mg · Total 50 mg</p><p class="card-desc">A proprietary tri-peptide blend combining GHK-Cu (copper tripeptide), TB-500 (Thymosin Beta-4 fragment), and BPC-157. Research interest spans tissue remodeling, extracellular matrix signaling, and angiogenic pathways. The combination format enables multi-target investigation in a single preparation. Supplied as co-lyophilized powder.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$55</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$40</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock blend" data-price="70" data-name="GLOW 70mg Blend" data-line1="GLOW" data-line2="70mg" data-vid="004"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-004</span><div class="card-badges"><span class="badge badge-blend">Signature Blend</span><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">GLOW 70</h2><p class="card-strength">GHK-Cu 70mg · TB-500 10mg · BPC-157 12mg · Total 70 mg</p><p class="card-desc">Enhanced-concentration formulation of the GLOW blend with doubled GHK-Cu and increased BPC-157 fractions. Designed for research protocols requiring higher peptide loading or extended study timelines. The GHK-Cu fraction has been independently studied for matrix metalloproteinase modulation and wound-healing signaling cascades.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$70</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$55</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="35" data-name="HCG" data-line1="HCG" data-line2="10,000iu" data-vid="005"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-005</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">HCG</h2><p class="card-strength">Human Chorionic Gonadotropin · 10,000 IU</p><p class="card-desc">Human chorionic gonadotropin is a glycoprotein hormone structurally similar to LH, binding the LH/CGR receptor. In research contexts it is used to study gonadotropin receptor signaling, Leydig cell function, and steroidogenesis pathways. Available at 10,000 IU per vial as lyophilized powder.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$35</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$25</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="55" data-name="Tesamorelin 10mg" data-line1="Tesamorelin" data-line2="10mg" data-vid="006"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-006</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Tesamorelin</h2><p class="card-strength">GHRH Analog · 10 mg</p><p class="card-desc">Tesamorelin is a synthetic analog of growth hormone-releasing hormone (GHRH) that stimulates pituitary GH secretion. Research applications include investigation of GH pulsatility, IGF-1 axis modulation, and visceral adipose tissue metabolism. Its 44-amino-acid GHRH sequence is stabilized for research-grade lyophilized storage.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$55</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$45</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="30" data-name="Tesamorelin 5mg" data-line1="Tesamorelin" data-line2="5mg" data-vid="007"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-007</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Tesamorelin</h2><p class="card-strength">GHRH Analog · 5 mg</p><p class="card-desc">Entry-concentration presentation of tesamorelin suited for dose-titration studies or protocols with smaller subject groups. Same synthetic GHRH analog profile, enabling investigation of the hypothalamic-pituitary-somatotropic axis. Stored as lyophilized powder under nitrogen atmosphere.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$30</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$20</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="25" data-name="BPC-157" data-line1="BPC-157" data-line2="10mg" data-vid="008"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-008</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">BPC-157</h2><p class="card-strength">Body Protection Compound · 10 mg</p><p class="card-desc">BPC-157 is a 15-amino-acid partial sequence of body protection compound isolated from human gastric juice. Research has focused on its interactions with the nitric oxide system, angiogenesis, and growth factor receptor signaling. Extensively studied in preclinical models examining gastrointestinal and musculoskeletal tissue pathways.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$25</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$20</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="35" data-name="MOTS-c" data-line1="MOTS-c" data-line2="10mg" data-vid="009"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-009</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">MOTS-c</h2><p class="card-strength">Mitochondrial-Derived Peptide · 10 mg</p><p class="card-desc">MOTS-c (Mitochondrial Open Reading Frame of the 12S rRNA-c) is a mitochondria-encoded peptide with emerging research interest in metabolic signaling. Studies have investigated its role in AMPK pathway activation, glucose utilization, and age-related metabolic decline. Represents a novel class of mitochondrial-nuclear signaling molecules.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$35</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$25</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="25" data-name="Selank" data-line1="Selank" data-line2="5mg" data-vid="010"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-010</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Selank</h2><p class="card-strength">Anxiolytic Heptapeptide · 5 mg</p><p class="card-desc">Selank is a synthetic analog of the endogenous tuftsin tetrapeptide. Research applications include investigation of GABAergic modulation, BDNF expression, and enkephalin metabolism. Studied for its interaction with serotonin and dopamine transport systems in preclinical neurological models.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$25</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$20</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="30" data-name="Semax" data-line1="Semax" data-line2="10mg" data-vid="011"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-011</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">Semax</h2><p class="card-strength">ACTH(4-7) Analog · 10 mg</p><p class="card-desc">Semax is a synthetic heptapeptide analog of ACTH(4-10), engineered for metabolic stability. It has been investigated for its influence on BDNF and NGF expression, monoamine neurotransmitter systems, and microcirculation. Subject of substantial research from Russian academic institutions with growing international scientific interest.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$30</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$20</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="instock" data-price="25" data-name="GHK-Cu" data-line1="GHKcu" data-line2="50mg" data-vid="012"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-012</span><div class="card-badges"><span class="badge badge-instock">In Stock</span></div></div><h2 class="card-name">GHK-Cu</h2><p class="card-strength">Copper Tripeptide · 50 mg</p><p class="card-desc">GHK-Cu (glycine-histidine-lysine copper complex) is a naturally occurring tripeptide with copper chelation properties. Research has examined its roles in collagen and elastin synthesis, matrix metalloproteinase regulation, antioxidant gene expression, and wound repair signaling. Among the most extensively studied peptides in skin biology and tissue remodeling research.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$25</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$20</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="limited" data-price="40" data-name="Melanotan II" data-line1="MT2" data-line2="10mg" data-vid="013"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-013</span><div class="card-badges"><span class="badge badge-limited">Limited Stock</span></div></div><h2 class="card-name">Melanotan II</h2><p class="card-strength">Melanocortin Receptor Agonist · 10 mg</p><p class="card-desc">Melanotan II (MT-II) is a synthetic analog of α-melanocyte-stimulating hormone (α-MSH), acting as a non-selective melanocortin receptor agonist. Research interest spans melanogenesis pathways, MC3R/MC4R signaling, and energy homeostasis. Its potent receptor affinity across multiple melanocortin subtypes makes it a versatile tool compound.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$40</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$30</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="incoming" data-price="55" data-name="Somatropin HGH" data-line1="Somatropin" data-line2="24 IU" data-vid="014"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-014</span><div class="card-badges"><span class="badge badge-incoming">Arriving Mid-May</span></div></div><h2 class="card-name">Somatropin</h2><p class="card-strength">Recombinant Human Growth Hormone · 24 IU</p><p class="card-desc">Recombinant human growth hormone (rhGH) with identical 191-amino-acid sequence to endogenous somatropin. Used in research studying somatotropic axis function, IGF-1 signaling, lipolysis, and protein anabolism. Available as 24 IU lyophilized vials. Currently in transit — estimated arrival mid-May 2026.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$55</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$45</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+      <div class="product-card" data-status="incoming" data-price="35" data-name="NAD+" data-line1="NAD+" data-line2="500mg" data-vid="015"><div class="card-img"></div><div class="card-body"><div class="card-top"><span class="card-id">BBR-015</span><div class="card-badges"><span class="badge badge-incoming">Arriving Mid-May</span></div></div><h2 class="card-name">NAD+</h2><p class="card-strength">Nicotinamide Adenine Dinucleotide · 500 mg</p><p class="card-desc">NAD+ is a critical coenzyme in cellular redox reactions and a substrate for sirtuins and PARPs. Research interest has expanded into its roles in mitochondrial biogenesis, DNA repair signaling, and age-related metabolic decline. Supplied as high-purity lyophilized powder. Arrival expected mid-May 2026.</p><div class="card-pricing"><div class="price-option"><span class="price-label">Reconstituted + Kit</span><span class="price-value">$35</span><span class="price-sub">Incl. bac water & supplies</span></div><div class="price-option"><span class="price-label">Unconstituted</span><span class="price-value">$25</span><span class="price-sub">Lyophilized powder only</span></div></div></div></div>
+    </div>
+  </div>
+
+  <section class="about" id="about">
+    <div class="about-inner">
+      <div>
+        <p class="about-eyebrow">Who We Are</p>
+        <h2 class="about-title">Research-Grade Compounds, Rigorously Sourced</h2>
+        <div class="about-body">
+          <p>Big Bear Research supplies qualified researchers with a curated selection of peptide compounds for scientific investigation. Our catalog is maintained with attention to purity documentation and compound integrity.</p>
+          <p>All compounds listed on this platform are strictly for research purposes. We do not provide medical advice, facilitate human administration, or accept orders through this website. Products are not available for shipment.</p>
+          <p>Researchers seeking compound information are encouraged to review available peer-reviewed literature and consult appropriate institutional resources.</p>
+        </div>
+      </div>
+      <div class="about-stats">
+        <div class="about-stat"><div class="about-stat-num">15</div><div class="about-stat-label">Active Compounds</div></div>
+        <div class="about-stat"><div class="about-stat-num">2</div><div class="about-stat-label">Proprietary Blends</div></div>
+        <div class="about-stat"><div class="about-stat-num">100%</div><div class="about-stat-label">Research Use Only</div></div>
+        <div class="about-stat"><div class="about-stat-num">NV</div><div class="about-stat-label">Based in Nevada</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-logo"><span class="footer-logo-bear">🐻</span><span class="footer-logo-name">Big Bear Research</span></div>
+        <p class="footer-disclaimer"><strong>Research Use Only.</strong> All compounds listed on this website are intended exclusively for scientific research purposes. They are not approved for human use, are not intended to diagnose, treat, cure, or prevent any disease or condition, and are not available for order or shipment through this platform. Researchers are solely responsible for compliance with all applicable local, state, and federal regulations.</p>
+      </div>
+      <div class="footer-right">
+        <div>© 2026 Big Bear Research</div>
+        <div style="margin-top:4px">Las Vegas, Nevada</div>
+        <div style="margin-top:12px;color:var(--text-dim)">For research<br/>purposes only</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+const PASSWORD='BigBear2026';
+function unlock(){const i=document.getElementById('gate-pw'),e=document.getElementById('gate-error');if(i.value===PASSWORD){document.getElementById('gate').style.display='none';document.getElementById('site').classList.add('visible');sessionStorage.setItem('bbr_auth','1');}else{i.classList.add('error');e.textContent='Incorrect access code.';setTimeout(()=>i.classList.remove('error'),400);i.value='';i.focus();}}
+if(sessionStorage.getItem('bbr_auth')==='1'){document.getElementById('gate').style.display='none';document.getElementById('site').classList.add('visible');}
+document.getElementById('gate-pw').focus();
+
+function makeVialSVG(line1,line2,vid){
+  const fs1=line1.length>9?7.2:line1.length>6?9:11;
+  const fs2=line2.length>7?7.5:9;
+  const y1=line2?120:128;
+  return`<svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="hl${vid}" x1="0%" y1="100%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="#c8eda0"/><stop offset="25%" stop-color="#72cfc0"/>
+<stop offset="55%" stop-color="#8adaf5"/><stop offset="80%" stop-color="#a0e4d0"/>
+<stop offset="100%" stop-color="#c4f0b0"/>
+</linearGradient>
+<radialGradient id="sh${vid}" cx="28%" cy="30%" r="55%">
+<stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+<stop offset="100%" stop-color="white" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="cp${vid}" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="#7a8898"/><stop offset="20%" stop-color="#c0ccd8"/>
+<stop offset="48%" stop-color="#e2eaf2"/><stop offset="75%" stop-color="#b0bcc8"/>
+<stop offset="100%" stop-color="#7a8898"/>
+</linearGradient>
+<linearGradient id="gl${vid}" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="rgba(195,225,245,0.28)"/>
+<stop offset="14%" stop-color="rgba(210,235,255,0.07)"/>
+<stop offset="86%" stop-color="rgba(195,225,245,0.04)"/>
+<stop offset="100%" stop-color="rgba(195,225,245,0.22)"/>
+</linearGradient>
+</defs>
+<!-- shadow --><ellipse cx="50" cy="196" rx="24" ry="4.5" fill="rgba(0,0,0,0.45)"/>
+<!-- glass body --><rect x="19" y="43" width="62" height="148" rx="5" fill="url(#gl${vid})" stroke="rgba(170,205,230,0.38)" stroke-width="0.8"/>
+<!-- label --><rect x="19" y="63" width="62" height="98" fill="url(#hl${vid})"/>
+<rect x="19" y="63" width="62" height="98" fill="url(#sh${vid})"/>
+<rect x="19" y="63" width="62" height="0.8" fill="rgba(20,50,30,0.35)"/>
+<rect x="19" y="161" width="62" height="0.8" fill="rgba(20,50,30,0.35)"/>
+<!-- bear ears --><circle cx="35" cy="79" r="9" fill="rgba(235,255,240,0.62)" stroke="#1c3826" stroke-width="1.6"/>
+<circle cx="55" cy="79" r="9" fill="rgba(235,255,240,0.62)" stroke="#1c3826" stroke-width="1.6"/>
+<!-- bear head --><circle cx="45" cy="95" r="18" fill="rgba(235,255,240,0.62)" stroke="#1c3826" stroke-width="1.6"/>
+<!-- eyes --><circle cx="38.5" cy="91" r="2.8" fill="#1c3826"/><circle cx="39.5" cy="89.8" r="1" fill="rgba(255,255,255,0.78)"/>
+<circle cx="51.5" cy="91" r="2.8" fill="#1c3826"/><circle cx="52.5" cy="89.8" r="1" fill="rgba(255,255,255,0.78)"/>
+<!-- nose --><ellipse cx="45" cy="97.5" rx="3.5" ry="2.8" fill="#1c3826"/>
+<!-- mouth --><path d="M41 103 Q45 107 49 103" fill="none" stroke="#1c3826" stroke-width="1.3" stroke-linecap="round"/>
+<!-- name line 1 --><text x="50" y="${y1}" font-family="Pacifico,cursive" font-size="${fs1}" fill="#1c3826" text-anchor="middle">${line1}</text>
+${line2?`<text x="50" y="${y1+13}" font-family="Pacifico,cursive" font-size="${fs2}" fill="#1c3826" text-anchor="middle">${line2}</text>`:''}
+<!-- research only --><text x="50" y="154" font-family="DM Sans,sans-serif" font-size="5.2" fill="#1e4030" text-anchor="middle" letter-spacing="0.12">Research purposes only</text>
+<!-- glass highlights --><rect x="19" y="43" width="5" height="148" rx="2.5" fill="rgba(255,255,255,0.22)"/>
+<rect x="76" y="43" width="4" height="148" rx="2" fill="rgba(255,255,255,0.09)"/>
+<!-- bottom dome --><ellipse cx="50" cy="188" rx="31" ry="8" fill="rgba(170,210,235,0.14)" stroke="rgba(170,210,235,0.28)" stroke-width="0.6"/>
+<!-- stopper --><rect x="23" y="28" width="54" height="18" rx="3" fill="#52636e" stroke="#38484e" stroke-width="0.8"/>
+<rect x="24" y="29" width="18" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>
+<!-- cap --><rect x="19" y="0" width="62" height="31" rx="5" fill="url(#cp${vid})" stroke="rgba(110,125,140,0.45)" stroke-width="0.7"/>
+<rect x="19" y="27" width="62" height="4" fill="rgba(70,85,100,0.45)"/>
+<circle cx="50" cy="14" r="11" fill="rgba(0,0,0,0.07)" stroke="rgba(100,115,130,0.28)" stroke-width="0.5"/>
+<rect x="26" y="5" width="13" height="4" rx="2" fill="rgba(255,255,255,0.32)"/>
+</svg>`;
+}
+
+document.querySelectorAll('.product-card').forEach(card=>{
+  const slot=card.querySelector('.card-img');
+  slot.innerHTML=makeVialSVG(card.dataset.line1||'',card.dataset.line2||'',card.dataset.vid||'001');
+});
+
+function filterProducts(f,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(c=>{
+    if(f==='all'){c.removeAttribute('data-hidden');return;}
+    const s=c.dataset.status||'';
+    if(s.includes(f))c.removeAttribute('data-hidden');
+    else c.setAttribute('data-hidden','true');
+  });
+}
+
+function sortProducts(m){
+  const grid=document.getElementById('product-grid');
+  const cards=Array.from(grid.querySelectorAll('.product-card'));
+  cards.sort((a,b)=>{
+    if(m==='price-asc')return+a.dataset.price-+b.dataset.price;
+    if(m==='price-desc')return+b.dataset.price-+a.dataset.price;
+    if(m==='name')return a.dataset.name.localeCompare(b.dataset.name);
+    return 0;
+  });
+  cards.forEach(c=>grid.appendChild(c));
+}
+</script>
+</body>
+</html>

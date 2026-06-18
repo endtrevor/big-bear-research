@@ -216,6 +216,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Archivo',sans-serif;padd
 .atc-btn{display:block;width:100%;padding:16px 24px;background:var(--ink);color:var(--bg);border:none;font-family:'Archivo Narrow',sans-serif;font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s,letter-spacing .2s}
 .atc-btn:hover{background:var(--rust);letter-spacing:.18em}
 .atc-btn.added{background:var(--green)}
+/* ── Desktop: contained variant selector + ATC under content column ── */
+@media(min-width:821px){
+  .variant-selector{margin-left:230px;max-width:520px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
+  .atc-btn{margin-left:230px;max-width:520px;width:520px;border-left:1.5px solid var(--ink);border-right:1.5px solid var(--ink)}
+}
+
 
 /* ===== CART OVERLAY + PANEL ===== */
 .cart-overlay{position:fixed;inset:0;z-index:400;background:rgba(26,26,23,.4);display:none;backdrop-filter:blur(3px)}
